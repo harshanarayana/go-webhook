@@ -9,6 +9,7 @@ import (
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 	"io/ioutil"
+	"strings"
 	"text/template"
 )
 
@@ -68,7 +69,7 @@ func Deploy() error {
 	if e != nil {
 		return e
 	}
-	caBundle := base64.StdEncoding.EncodeToString([]byte(out))
+	caBundle := base64.StdEncoding.EncodeToString([]byte(strings.TrimSpace(strings.Replace(out, "'", "", -1))))
 
 	for _, file := range []string{"deployment.yaml", "service.yaml", "mutating.yaml"} {
 		var filePath = "./deploy/" + file

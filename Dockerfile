@@ -25,4 +25,4 @@ COPY ssl/*.pem /data/ssl/
 COPY --from=build-env /tmp/go-webhook /go-webhook
 RUN chmod 755 /go-webhook
 
-ENTRYPOINT ["go-webhook"]
+ENTRYPOINT ["/go-webhook"]
