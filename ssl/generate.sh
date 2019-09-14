@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-service="maglev-admission-webhook"
-secret="shhhh!donottell"
+service="maglev-admission-webhook-golang"
+secret="icanTellYouBuTThENIwiLLHaVe2ki11y0u"
 namespace="default"
 
 
