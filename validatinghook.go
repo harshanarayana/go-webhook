@@ -34,16 +34,21 @@ func validateContainerExec(ar  v1beta1.AdmissionReview) *v1beta1.AdmissionRespon
 		return CreateAdmissionResponse("404", err)
 	}
 	if _, ok := pod.Annotations[EnableExecCheckAnnotation]; !ok {
+		logrus.Infof("Annotation %s not found in pod. No exec validation will be performed", EnableExecCheckAnnotation)
 		return &v1beta1.AdmissionResponse{Allowed: true}
 	} else {
+		logrus.Infof("Performing exec validation based on annotation %s", EnableExecCheckAnnotation)
 		v, _ := pod.Annotations[EnableExecCheckAnnotation]
+		logrus.Infof("Containers allowed to be exec'ed into %s", v)
 		var containers = make(map[string]bool, 0)
 		for _, c := range strings.Split(v, ",") {
 			containers[c] = true
 		}
 		if _, aok := containers[podExecOptions.Container]; aok {
+			logrus.Infof("Container allowed to be exec'ed into")
 			return &v1beta1.AdmissionResponse{Allowed: true}
 		} else {
+			logrus.Infof("denying exec into container as this is no enabled by the annotation %s", EnableExecCheckAnnotation)
 			return CreateAdmissionResponseWithAllowance(false, "404", fmt.Errorf(
 				"exec only allowed on contaienrs %v", v))
 		}
