@@ -13,10 +13,12 @@ import (
 const (
 	SecretLabel   = "you.shall.not.pass.io"
 	AddFirstLabel = `[
-		{ "op":  "add", "path": "/spec/template/metadata/labels", "value": { "{{ .LabelName }}": "{{ .LabelValue }}" }}
+		{ "op":  "add", "path": "/spec/template/metadata/labels", "value": { "{{ .LabelName }}": "{{ .LabelValue }}" }},
+		{ "op":  "add", "path": "/spec/selector/matchLabels", "value": { "{{ .LabelName }}": "{{ .LabelValue }}" }}
 	]`
 	AddLabel = `[
-		{ "op":  "add", "path": "/spec/template/metadata/labels/{{ .LabelName }}", "value": "{{ .LabelValue }}" }
+		{ "op":  "add", "path": "/spec/template/metadata/labels/{{ .LabelName }}", "value": "{{ .LabelValue }}" },
+		{ "op":  "add", "path": "/spec/selector/matchLabels/{{ .LabelName }}", "value": "{{ .LabelValue }}" }
 	]`
 )
 

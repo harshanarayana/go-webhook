@@ -18,7 +18,7 @@ RUN glide install && glide update && go build .
 RUN cp $GOPATH/src/github.com/harshanarayana/go-webhook/go-webhook /tmp/go-webhook
 
 # -------- Setup and build the runtime image -------- #
-FROM alpine
+FROM ubuntu:18.04
 
 RUN mkdir -p /data/ssl
 COPY ssl/*.pem /data/ssl/
