@@ -30,9 +30,13 @@ func CreateAdmissionResponse(status string, err error) *v1beta1.AdmissionRespons
 }
 
 func CreateAdmissionResponseWithAllowance(allowed bool, status string, err error) *v1beta1.AdmissionResponse {
-	response := CreateAdmissionResponse(status, err)
-	response.Allowed = allowed
-	return response
+	return &v1beta1.AdmissionResponse{
+		Allowed:          allowed,
+		Result:           &metav1.Status{
+			Status: status,
+			Message: err.Error(),
+		},
+	}
 }
 
 // xref: credits: https://flaviocopes.com/go-random/
