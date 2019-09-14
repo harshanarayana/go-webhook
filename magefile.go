@@ -74,7 +74,7 @@ func Deploy() error {
 	}
 	caBundle := base64.StdEncoding.EncodeToString([]byte(strings.TrimSpace(strings.Replace(out, "'", "", -1))))
 
-	for _, file := range []string{"deployment.yaml", "service.yaml", "mutating.yaml"} {
+	for _, file := range []string{"deployment.yaml", "service.yaml", "mutating.yaml", "validating.yaml"} {
 		var filePath = "./deploy/" + file
 		data, err := ioutil.ReadFile(filePath)
 		if err != nil {
