@@ -1,5 +1,5 @@
-hash: 2b5b94139ff40261c6ac86f08f4e21fdd6ef63e2f90c0e10668f4ecab78870ec
-updated: 2019-09-14T19:16:05.941665+05:30
+hash: 418a1ea0c696ef40181eed42db0797155ff90bd377937d84b3a29c11a364e632
+updated: 2019-09-14T19:51:46.386204+05:30
 imports:
 - name: github.com/gogo/protobuf
   version: 65acae22fc9d1fe290b33faa2bd64cdc20a463a0
@@ -10,6 +10,8 @@ imports:
   version: f140a6486e521aad38f5917de355cbf147cc0496
 - name: github.com/json-iterator/go
   version: 27518f6661eba504be5a7a9a9f6d9460d892ade3
+- name: github.com/konsorten/go-windows-terminal-sequences
+  version: f55edac94c9bbba5d6182a4be46d86a2c9b5b50e
 - name: github.com/magefile/mage
   version: d6f8413e8c29962b680533ed21910be78b17cded
   subpackages:
@@ -28,6 +30,10 @@ imports:
   - http2
   - http2/hpack
   - idna
+- name: golang.org/x/sys
+  version: c3b328c6e5a763a2bfc82a48b4bd855037210934
+  subpackages:
+  - unix
 - name: golang.org/x/text
   version: e6919f6577db79269a6443b9dc46d18f2238fb5d
   subpackages:
@@ -86,10 +92,6 @@ imports:
   - third_party/forked/golang/reflect
 - name: k8s.io/klog
   version: 3ca30a56d8a775276f9cdae009ba326fdc05af7f
-- name: k8s.io/kubernetes
-  version: f6278300bebbb750328ac16ee6dd3aa7d3549568
-  subpackages:
-  - pkg/apis
 - name: sigs.k8s.io/yaml
   version: fd68e9863619f6ec2fdd8625fe1f02e7c877e480
 testImports: []
