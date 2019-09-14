@@ -2,7 +2,7 @@ package main
 
 import "net/http"
 
-func main()  {
+func main() {
 
 	http.HandleFunc("/mutating/add-secret-label", MutatingLabelHandler)
 	http.HandleFunc("/alive", func(w http.ResponseWriter, req *http.Request) { w.Write([]byte("ok")) })

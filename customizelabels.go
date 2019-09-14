@@ -5,15 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"k8s.io/api/admission/v1beta1"
-	"k8s.io/klog"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/klog"
 	"net/http"
 	"text/template"
 )
 
 const (
-	SECRET_LABEL = "you.shall.not.pass.io"
+	SECRET_LABEL    = "you.shall.not.pass.io"
 	ADD_FIRST_LABEL = `[
 		{ "op":  "add", "path": "/spec/template/metadata/labels", "value": { "{{ .LabelName }}": "{{ .LabelValue }}" }
 	]`
@@ -31,7 +31,6 @@ func renderTemplate(tpl string, data interface{}) string {
 	return buf.String()
 }
 
-
 func addSecretLabel(ar v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
 	klog.Info("Mutating the request to append custom labels for secret if missing")
 	raw := ar.Request.Object.Raw
@@ -47,21 +46,21 @@ func addSecretLabel(ar v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
 	if _, ok := pod.Labels[SECRET_LABEL]; !ok {
 		if len(pod.Labels) == 0 {
 			reviewResponse.Patch = []byte(renderTemplate(ADD_FIRST_LABEL, map[string]interface{}{
-				"LabelName": SECRET_LABEL,
+				"LabelName":  SECRET_LABEL,
 				"LabelValue": GenerateRandomString(10),
 			}))
 		} else {
-			reviewResponse.Patch  = []byte(renderTemplate(ADD_LABEL, map[string]interface{}{
-				"LabelName": SECRET_LABEL,
-				"LabelValue":  GenerateRandomString(10),
+			reviewResponse.Patch = []byte(renderTemplate(ADD_LABEL, map[string]interface{}{
+				"LabelName":  SECRET_LABEL,
+				"LabelValue": GenerateRandomString(10),
 			}))
 		}
 		pt := v1beta1.PatchTypeJSONPatch
-		reviewResponse.PatchType= &pt
+		reviewResponse.PatchType = &pt
 	}
 	return &reviewResponse
 }
 
-func MutatingLabelHandler(w http.ResponseWriter, r *http.Request)  {
+func MutatingLabelHandler(w http.ResponseWriter, r *http.Request) {
 	serve(w, r, addSecretLabel)
 }

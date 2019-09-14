@@ -22,7 +22,7 @@ func TLSConfig(config Config) *tls.Config {
 func CreateAdmissionResponse(status string, err error) *v1beta1.AdmissionResponse {
 	return &v1beta1.AdmissionResponse{
 		Result: &metav1.Status{
-			Status: status,
+			Status:  status,
 			Message: err.Error(),
 		},
 	}

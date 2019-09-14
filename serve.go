@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func serve(w http.ResponseWriter, r *http.Request,  admit Admission)  {
+func serve(w http.ResponseWriter, r *http.Request, admit Admission) {
 	var body []byte
 	if r.Body != nil {
 		if data, err := ioutil.ReadAll(r.Body); err == nil {
