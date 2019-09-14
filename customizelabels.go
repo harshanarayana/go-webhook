@@ -3,9 +3,9 @@ package main
 import (
 	"bytes"
 	"errors"
+	klog "github.com/sirupsen/logrus"
 	"k8s.io/api/admission/v1beta1"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/klog"
 	"net/http"
 	"text/template"
 )
@@ -44,7 +44,7 @@ func addSecretLabel(ar v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
 	if _, ok := pod.Labels[SecretLabel]; !ok {
 		secret, err := GenerateRandomString(10)
 		if err != nil {
-			klog.Fatal("Failed to generate random secret %v", err)
+			klog.Fatalf("Failed to generate random secret %v", err)
 			return CreateAdmissionResponse("404", errors.New("Failed to generate a random secret "))
 		} else {
 			if len(pod.Labels) == 0 {
@@ -52,16 +52,25 @@ func addSecretLabel(ar v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
 					"LabelName":  SecretLabel,
 					"LabelValue": secret,
 				}))
+				klog.WithFields(klog.Fields{
+					"event": string(reviewResponse.Patch),
+				}).Info("Response Patch")
 			} else {
 				reviewResponse.Patch = []byte(renderTemplate(AddLabel, map[string]interface{}{
 					"LabelName":  SecretLabel,
 					"LabelValue": secret,
 				}))
+				klog.WithFields(klog.Fields{
+					"event": string(reviewResponse.Patch),
+				}).Info("Response Patch")
 			}
 			pt := v1beta1.PatchTypeJSONPatch
 			reviewResponse.PatchType = &pt
 		}
 	}
+	klog.WithFields(klog.Fields{
+		"response": reviewResponse.Result,
+	}).Info("Response Patch")
 	return &reviewResponse
 }
 

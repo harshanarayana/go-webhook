@@ -3,9 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	klog "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"k8s.io/api/admission/v1beta1"
-	"k8s.io/klog"
 	"net/http"
 )
 
