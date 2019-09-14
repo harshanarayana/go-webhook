@@ -112,6 +112,8 @@ func maxScaleCountEnforcer(ar v1beta1.AdmissionReview) *v1beta1.AdmissionRespons
 	reviewResponse := v1beta1.AdmissionResponse{}
 	reviewResponse.Allowed = true
 
+	logrus.Infof("Current expected replicas %d", *deployment.Spec.Replicas)
+	logrus.Infof("Current expected replicas %v", *deployment.Spec.Replicas > int32(maxPods))
 	if *deployment.Spec.Replicas > int32(maxPods) {
 		return CreateAdmissionResponseWithAllowance(false, "404", fmt.Errorf("maximum  allowed replica count is %d", maxPods))
 	}
