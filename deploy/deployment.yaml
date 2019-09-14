@@ -20,3 +20,14 @@ spec:
           ports:
             - containerPort: 6543
           imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /config
+              name: exec-options
+      volumes:
+        - name: exec-options
+          configMap:
+            name: exec-options
+            defaultMode: 0755
+            items:
+              - key: exec-options.json
+                path: exec-options.json

@@ -8,3 +8,12 @@ type Config struct {
 }
 
 type Admission func(review v1beta1.AdmissionReview) *v1beta1.AdmissionResponse
+
+type AllowedShell struct {
+	Bash bool `json:"bash"`
+	Sh   bool `json:"sh"`
+}
+
+type ExecOptionConfiguration struct {
+	ExecOptions map[string]AllowedShell `json:"execOptions"`
+}

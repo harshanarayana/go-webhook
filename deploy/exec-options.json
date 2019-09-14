@@ -1,0 +1,8 @@
+{
+  "execOptions": {
+    "nginx": {
+      "bash": true,
+      "sh": false
+    }
+  }
+}

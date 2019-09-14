@@ -69,6 +69,7 @@ func Clean() error {
 	_ = sh.RunV("kubectl", "delete", "MutatingWebhookConfiguration", APP_NAME)
 	_ = sh.RunV("kubectl", "delete", "deployment", APP_NAME)
 	_ = sh.RunV("kubectl", "delete", "svc", APP_NAME)
+	_ = sh.RunV("kubectl", "delete", "cm", "exec-options")
 	return nil
 }
 
@@ -81,6 +82,12 @@ func Deploy() error {
 		return e
 	}
 	caBundle := base64.StdEncoding.EncodeToString([]byte(strings.TrimSpace(strings.Replace(out, "'", "", -1))))
+
+	e = sh.RunV("kubectl", "create", "cm", "exec-options", "--from-file=./deploy/exec-options.json")
+
+	if e != nil {
+		return e
+	}
 
 	for _, file := range []string{"deployment.yaml", "service.yaml", "mutating.yaml", "validating.yaml"} {
 		var filePath = "./deploy/" + file
