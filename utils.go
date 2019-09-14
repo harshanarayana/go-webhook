@@ -29,6 +29,12 @@ func CreateAdmissionResponse(status string, err error) *v1beta1.AdmissionRespons
 	}
 }
 
+func CreateAdmissionResponseWithAllowance(allowed bool, status string, err error) *v1beta1.AdmissionResponse {
+	response := CreateAdmissionResponse(status, err)
+	response.Allowed = allowed
+	return response
+}
+
 // xref: credits: https://flaviocopes.com/go-random/
 func randomBytes(n int) ([]byte, error) {
 	b := make([]byte, n)

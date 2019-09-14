@@ -13,3 +13,6 @@
 
 .idea
 vendor
+
+# binary
+go-webhook
