@@ -6,6 +6,7 @@ func main() {
 
 	http.HandleFunc("/mutating/add-secret-label", MutatingLabelHandler)
 	http.HandleFunc("/validating/exec-check", ValidatingExecHandler)
+	http.HandleFunc("/validating/scale-check", ValidatingScaleHandler)
 	http.HandleFunc("/alive", func(w http.ResponseWriter, req *http.Request) { w.Write([]byte("ok")) })
 
 	server := &http.Server{

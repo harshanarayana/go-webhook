@@ -8,6 +8,8 @@ import (
 	"k8s.io/api/admission/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	"net/http"
+	"os"
+	"strconv"
 )
 
 const (
@@ -22,6 +24,18 @@ func loadConfig() ExecOptionConfiguration  {
 	}
 	_ = json.Unmarshal(b, &option)
 	return option
+}
+
+func getMaxPods() int {
+	var maxPods = 2
+	var err error
+	if maxPodsVal, ok := os.LookupEnv("MAX_SCALE_COUNT"); ok {
+		maxPods, err = strconv.Atoi(maxPodsVal)
+		if err != nil {
+			maxPods = 2
+		}
+	}
+	return maxPods
 }
 
 func validateContainerExec(ar  v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
@@ -70,6 +84,29 @@ func validateContainerExec(ar  v1beta1.AdmissionReview) *v1beta1.AdmissionRespon
 	}
 }
 
+func maxScaleCountEnforcer(ar v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
+	var maxPods = getMaxPods()
+	logrus.
+		WithFields(logrus.Fields{
+			"maxScale": maxPods,
+	}).Infof("Validating Pod scale behavior to make sure an upper limit is  enforced")
+
+	if ar.Request.SubResource != "scale" {
+		return &v1beta1.AdmissionResponse{Allowed: true}
+	}
+	logrus.WithFields(logrus.Fields{
+		"operation": ar.Request.Operation,
+		"subresource": ar.Request.SubResource,
+		"raw": string(ar.Request.Object.Raw),
+		"kind": ar.Request.Kind,
+	}).Infof("Request Information")
+	return &v1beta1.AdmissionResponse{Allowed: true}
+}
+
 func ValidatingExecHandler(w http.ResponseWriter, r *http.Request)  {
 	serve(w, r, validateContainerExec)
+}
+
+func ValidatingScaleHandler(w http.ResponseWriter, r *http.Request)  {
+	serve(w, r, maxScaleCountEnforcer)
 }
