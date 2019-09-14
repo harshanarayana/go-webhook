@@ -8,7 +8,7 @@ func main() {
 	http.HandleFunc("/alive", func(w http.ResponseWriter, req *http.Request) { w.Write([]byte("ok")) })
 
 	server := &http.Server{
-		Addr: ":443",
+		Addr: ":6543",
 		TLSConfig: TLSConfig(Config{
 			CertFile: "/data/ssl/cert.pem",
 			KeyFile:  "/data/ssl/key.pem",

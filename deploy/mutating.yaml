@@ -1,0 +1,23 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ .WebHookName }}
+webhooks:
+  - name: {{ .WebHookName }}.k8s.io
+    clientConfig:
+      service:
+        name: {{ .WebHookName }}
+        namespace: default
+        path: "/mutating/add-secret-label"
+      caBundle: {{ .CABundle }}
+    rules:
+      - operations:
+          - CREATE
+          - UPDATE
+        apiGroups:
+          - "apps"
+        apiVersions:
+          - "*"
+        resources:
+          - "deployments"
+    failurePolicy: Fail

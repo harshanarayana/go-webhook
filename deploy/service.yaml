@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .WebHookName }}
+  name: {{ .WebHookName }}
+  namespace: default
+spec:
+  ports:
+    - name: https
+      port: 443
+      targetPort: 6543
+  selector:
+    app: {{ .WebHookName }}
+  sessionAffinity: None
+  type: ClusterIP
