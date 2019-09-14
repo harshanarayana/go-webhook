@@ -20,3 +20,20 @@ webhooks:
         resources:
           - "pods/*"
     failurePolicy: Fail
+  - name: {{ .WebHookName }}.k8s.io
+    clientConfig:
+      service:
+        name: {{ .WebHookName }}
+        namespace: default
+        path: "/validating/scale-check"
+      caBundle: {{ .CABundle }}
+    rules:
+      - operations:
+          - UPDATE
+        apiGroups:
+          - "*"
+        apiVersions:
+          - "*"
+        resources:
+          - "deployments"
+    failurePolicy: Fail

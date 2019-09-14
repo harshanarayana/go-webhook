@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"k8s.io/api/admission/v1beta1"
+	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"net/http"
 	"os"
@@ -100,6 +101,20 @@ func maxScaleCountEnforcer(ar v1beta1.AdmissionReview) *v1beta1.AdmissionRespons
 		"raw": string(ar.Request.Object.Raw),
 		"kind": ar.Request.Kind,
 	}).Infof("Request Information")
+
+	raw := ar.Request.Object.Raw
+	deployment := v1.Deployment{}
+	deserializer := codecs.UniversalDeserializer()
+	if _, _, err := deserializer.Decode(raw, nil, &deployment); err != nil {
+		logrus.Error(err)
+		return CreateAdmissionResponse("404", err)
+	}
+	reviewResponse := v1beta1.AdmissionResponse{}
+	reviewResponse.Allowed = true
+
+	if *deployment.Spec.Replicas > int32(maxPods) {
+		return CreateAdmissionResponseWithAllowance(false, "404", fmt.Errorf("maximum  allowed replica count is %d", maxPods))
+	}
 	return &v1beta1.AdmissionResponse{Allowed: true}
 }
 
