@@ -20,8 +20,8 @@ RUN cp $GOPATH/src/github.com/harshanarayana/go-webhook/go-webhook /tmp/go-webho
 # -------- Setup and build the runtime image -------- #
 FROM alpine
 
-#RUN mkdir -p /data/ssl
-#COPY ssl/*.pem /data/ssl/
+RUN mkdir -p /data/ssl
+COPY ssl/*.pem /data/ssl/
 COPY --from=build-env /tmp/go-webhook /go-webhook
 RUN chmod 755 /go-webhook
 
