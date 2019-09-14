@@ -1,0 +1,10 @@
+package: github.com/harshanarayana/go-webhook
+import:
+- package: k8s.io/klog
+  version: v0.4.0
+- package: k8s.io/api
+  subpackages:
+  - admission
+  - core
+  - admissionregistration/
+- package: k8s.io/apimachinery
