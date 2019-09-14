@@ -6,8 +6,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"k8s.io/api/admission/v1beta1"
-	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	ev1beta1 "k8s.io/api/extensions/v1beta1"
 	"net/http"
 	"os"
 	"strconv"
@@ -100,7 +100,7 @@ func maxScaleCountEnforcer(ar v1beta1.AdmissionReview) *v1beta1.AdmissionRespons
 	}).Infof("Request Information")
 
 	raw := ar.Request.Object.Raw
-	deployment := v1.Deployment{}
+	deployment := ev1beta1.Deployment{}
 	deserializer := codecs.UniversalDeserializer()
 	if _, _, err := deserializer.Decode(raw, nil, &deployment); err != nil {
 		logrus.Error(err)
