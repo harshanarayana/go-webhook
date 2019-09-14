@@ -1,10 +1,5 @@
 # -------- Setup and build the golang binary -------- #
-FROM golang:1.12.9-alpine3.10 AS build-env
-
-# Add Dependencies required for building the binaries
-RUN apk --no-cache add build-base git bzr mercurial gcc
-RUN apk --no-cache add curl wget
-RUN curl https://glide.sh/get | sh
+FROM harshanarayana/golang:latest AS build-env
 
 # Clone and setup the repo
 RUN mkdir -p $GOPATH/src/github.com/harshanarayana/
