@@ -92,9 +92,6 @@ func maxScaleCountEnforcer(ar v1beta1.AdmissionReview) *v1beta1.AdmissionRespons
 			"maxScale": maxPods,
 	}).Infof("Validating Pod scale behavior to make sure an upper limit is  enforced")
 
-	if ar.Request.SubResource != "scale" {
-		return &v1beta1.AdmissionResponse{Allowed: true}
-	}
 	logrus.WithFields(logrus.Fields{
 		"operation": ar.Request.Operation,
 		"subresource": ar.Request.SubResource,
