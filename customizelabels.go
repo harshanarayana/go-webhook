@@ -11,11 +11,11 @@ import (
 )
 
 const (
-	SECRET_LABEL    = "you.shall.not.pass.io"
-	ADD_FIRST_LABEL = `[
+	SecretLabel   = "you.shall.not.pass.io"
+	AddFirstLabel = `[
 		{ "op":  "add", "path": "/spec/template/metadata/labels", "value": { "{{ .LabelName }}": "{{ .LabelValue }}" }
 	]`
-	ADD_LABEL = `[
+	AddLabel = `[
 		{ "op":  "add", "path": "/spec/template/metadata/labels/{{ .LabelName }}", "value": "{{ .LabelValue }}" }
 	]`
 )
@@ -41,20 +41,20 @@ func addSecretLabel(ar v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
 	reviewResponse := v1beta1.AdmissionResponse{}
 	reviewResponse.Allowed = true
 
-	if _, ok := pod.Labels[SECRET_LABEL]; !ok {
+	if _, ok := pod.Labels[SecretLabel]; !ok {
 		secret, err := GenerateRandomString(10)
 		if err != nil {
 			klog.Fatal("Failed to generate random secret %v", err)
 			return CreateAdmissionResponse("404", errors.New("Failed to generate a random secret "))
 		} else {
 			if len(pod.Labels) == 0 {
-				reviewResponse.Patch = []byte(renderTemplate(ADD_FIRST_LABEL, map[string]interface{}{
-					"LabelName":  SECRET_LABEL,
+				reviewResponse.Patch = []byte(renderTemplate(AddFirstLabel, map[string]interface{}{
+					"LabelName":  SecretLabel,
 					"LabelValue": secret,
 				}))
 			} else {
-				reviewResponse.Patch = []byte(renderTemplate(ADD_LABEL, map[string]interface{}{
-					"LabelName":  SECRET_LABEL,
+				reviewResponse.Patch = []byte(renderTemplate(AddLabel, map[string]interface{}{
+					"LabelName":  SecretLabel,
 					"LabelValue": secret,
 				}))
 			}
