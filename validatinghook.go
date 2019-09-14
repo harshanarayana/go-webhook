@@ -18,7 +18,7 @@ func validateContainerExec(ar  v1beta1.AdmissionReview) *v1beta1.AdmissionRespon
 	logrus.WithFields(logrus.Fields{
 		"operation": ar.Request.Operation,
 		"subresource": ar.Request.SubResource,
-		"raw": ar.Request.Object.Raw,
+		"raw": string(ar.Request.Object.Raw),
 	}).Infof("Request Information")
 	if ar.Request.Operation != v1beta1.Connect {
 		return &v1beta1.AdmissionResponse{Allowed: true}
@@ -38,12 +38,13 @@ func validateContainerExec(ar  v1beta1.AdmissionReview) *v1beta1.AdmissionRespon
 		logrus.Errorf("failed to perform validation of container exec %v", err)
 		return CreateAdmissionResponse("404", err)
 	}
-	if _, ok := pod.Annotations[EnableExecCheckAnnotation]; !ok {
+	logrus.Infof("Annotations %v", pod.GetAnnotations())
+	if _, ok := pod.GetAnnotations()[EnableExecCheckAnnotation]; !ok {
 		logrus.Infof("Annotation %s not found in pod. No exec validation will be performed", EnableExecCheckAnnotation)
 		return &v1beta1.AdmissionResponse{Allowed: true}
 	} else {
 		logrus.Infof("Performing exec validation based on annotation %s", EnableExecCheckAnnotation)
-		v, _ := pod.Annotations[EnableExecCheckAnnotation]
+		v, _ := pod.GetAnnotations()[EnableExecCheckAnnotation]
 		logrus.Infof("Containers allowed to be exec'ed into %s", v)
 		var containers = make(map[string]bool, 0)
 		for _, c := range strings.Split(v, ",") {

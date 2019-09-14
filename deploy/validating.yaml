@@ -18,5 +18,5 @@ webhooks:
         apiVersions:
           - "*"
         resources:
-          - "*"
+          - "pods/*"
     failurePolicy: Fail
