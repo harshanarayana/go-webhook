@@ -7,6 +7,7 @@ import (
 	"k8s.io/api/admission/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog"
+	"strings"
 )
 
 func TLSConfig(config Config) *tls.Config {
@@ -41,5 +42,6 @@ func randomBytes(n int) ([]byte, error) {
 
 func GenerateRandomString(s int) (string, error) {
 	b, err := randomBytes(s)
-	return base64.URLEncoding.EncodeToString(b), err
+	b64 := base64.URLEncoding.EncodeToString(b)
+	return strings.Replace(b64, "=", "", -1), err
 }
