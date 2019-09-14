@@ -2,11 +2,9 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
-	"fmt"
+	"errors"
 	"k8s.io/api/admission/v1beta1"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog"
 	"net/http"
 	"text/template"
@@ -44,19 +42,25 @@ func addSecretLabel(ar v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
 	reviewResponse.Allowed = true
 
 	if _, ok := pod.Labels[SECRET_LABEL]; !ok {
-		if len(pod.Labels) == 0 {
-			reviewResponse.Patch = []byte(renderTemplate(ADD_FIRST_LABEL, map[string]interface{}{
-				"LabelName":  SECRET_LABEL,
-				"LabelValue": GenerateRandomString(10),
-			}))
+		secret, err := GenerateRandomString(10)
+		if err != nil {
+			klog.Fatal("Failed to generate random secret %v", err)
+			return CreateAdmissionResponse("404", errors.New("Failed to generate a random secret "))
 		} else {
-			reviewResponse.Patch = []byte(renderTemplate(ADD_LABEL, map[string]interface{}{
-				"LabelName":  SECRET_LABEL,
-				"LabelValue": GenerateRandomString(10),
-			}))
+			if len(pod.Labels) == 0 {
+				reviewResponse.Patch = []byte(renderTemplate(ADD_FIRST_LABEL, map[string]interface{}{
+					"LabelName":  SECRET_LABEL,
+					"LabelValue": secret,
+				}))
+			} else {
+				reviewResponse.Patch = []byte(renderTemplate(ADD_LABEL, map[string]interface{}{
+					"LabelName":  SECRET_LABEL,
+					"LabelValue": secret,
+				}))
+			}
+			pt := v1beta1.PatchTypeJSONPatch
+			reviewResponse.PatchType = &pt
 		}
-		pt := v1beta1.PatchTypeJSONPatch
-		reviewResponse.PatchType = &pt
 	}
 	return &reviewResponse
 }
