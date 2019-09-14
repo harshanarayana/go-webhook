@@ -15,6 +15,11 @@ const (
 
 func validateContainerExec(ar  v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
 	logrus.Infof("Validating pod exec based on pre-configured annotations")
+	logrus.WithFields(logrus.Fields{
+		"operation": ar.Request.Operation,
+		"subresource": ar.Request.SubResource,
+		"raw": ar.Request.Object.Raw,
+	}).Infof("Request Information")
 	if ar.Request.Operation != v1beta1.Connect {
 		return &v1beta1.AdmissionResponse{Allowed: true}
 	}

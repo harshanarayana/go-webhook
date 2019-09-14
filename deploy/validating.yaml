@@ -12,12 +12,11 @@ webhooks:
       caBundle: {{ .CABundle }}
     rules:
       - operations:
-          - CREATE
-          - UPDATE
+          - CONNECT
         apiGroups:
-          - "apps"
+          - "*"
         apiVersions:
           - "*"
         resources:
-          - "deployments"
+          - "*"
     failurePolicy: Fail
