@@ -8,3 +8,7 @@ import:
   - core
   - admissionregistration/
 - package: k8s.io/apimachinery
+- package: k8s.io/kubernetes
+  version: v1.15.2
+  subpackages:
+  - pkg/apis

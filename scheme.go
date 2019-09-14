@@ -11,17 +11,19 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 )
 
-var scheme = runtime.NewScheme()
-var codecs = serializer.NewCodecFactory(scheme)
+var runtimeScheme = runtime.NewScheme()
+var codecs = serializer.NewCodecFactory(runtimeScheme)
+var deserializer  = codecs.UniversalDeserializer()
+var defaulter = runtime.ObjectDefaulter(runtimeScheme)
 
 func init() {
-	addToScheme(scheme)
+	addToScheme(runtimeScheme)
 }
 
 func addToScheme(scheme *runtime.Scheme) {
 	utilruntime.Must(corev1.AddToScheme(scheme))
-	utilruntime.Must(admissionv1beta1.AddToScheme(scheme))
 	utilruntime.Must(admissionregistrationv1beta1.AddToScheme(scheme))
+	utilruntime.Must(admissionv1beta1.AddToScheme(scheme))
 	utilruntime.Must(admissionv1.AddToScheme(scheme))
 	utilruntime.Must(admissionregistrationv1.AddToScheme(scheme))
 }
